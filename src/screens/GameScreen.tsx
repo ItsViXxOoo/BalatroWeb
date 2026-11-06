@@ -1,4 +1,4 @@
-import { useEffect, type Dispatch } from 'react';
+import { useEffect, useRef, type Dispatch } from 'react';
 import type { GameAction, GameState } from '../game/engine';
 import { formatMult, scoreHand } from '../game/scoring';
 import { REWARD_PER_HAND, ROUNDS } from '../game/rounds';
@@ -43,13 +43,17 @@ export function GameScreen({
   const canDiscard = canPlay && state.discardsLeft > 0;
   const coachVisible = canAct && state.handsPlayed === 0 && state.selected.length === 0;
 
+  const messageIdRef = useRef(state.messageId);
+  messageIdRef.current = state.messageId;
+
   useEffect(() => {
     if (!state.message) return;
+    const currentMessageId = messageIdRef.current;
     const timeout = window.setTimeout(() => {
-      dispatch({ type: 'CLEAR_MESSAGE', messageId: state.messageId });
+      dispatch({ type: 'CLEAR_MESSAGE', messageId: currentMessageId });
     }, 2400);
     return () => window.clearTimeout(timeout);
-  }, [dispatch, state.message, state.messageId]);
+  }, [dispatch, state.message]);
 
   const toggleCard = (cardId: string) => {
     playSound('card');

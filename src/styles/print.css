@@ -2,8 +2,9 @@
 .print-screen {
   overflow-y: auto;
   background:
-    radial-gradient(900px 500px at 50% -10%, rgba(232, 180, 74, 0.08), transparent 60%),
-    #090c0b;
+    radial-gradient(ellipse 85% 55% at 50% 73%, rgba(20, 84, 67, 0.5), transparent 72%),
+    radial-gradient(ellipse 60% 40% at 50% 60%, rgba(196, 138, 30, 0.04), transparent 70%),
+    var(--c-bg-deep);
 }
 
 .print-toolbar {
@@ -17,9 +18,9 @@
   justify-content: space-between;
   gap: 14px;
   padding: 14px 0;
-  background: rgba(9, 12, 11, 0.88);
+  background: rgba(8, 15, 12, 0.92);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(232, 180, 74, 0.18);
+  border-bottom: 1px solid var(--c-border-gold-dim);
 }
 
 .print-toolbar-title {
@@ -32,7 +33,7 @@
 
 .print-toolbar-note {
   font-size: 0.66rem;
-  color: var(--cream-faint);
+  color: var(--c-text-muted);
 }
 
 .print-sheets {

@@ -1,0 +1,586 @@
+/* ============================================
+   COMODÍN / BALATRO WEB — ANIMACIONES
+   Keyframes y utilidades de movimiento
+   ============================================ */
+
+/* ========================================
+   ENTRADAS / SALIDAS BASE
+   ======================================== */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-out-down {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(16px); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scale-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.92); }
+}
+
+/* Panel modal — entrada con overshoot elástico */
+@keyframes panel-in {
+  0%   { opacity: 0; transform: scale(0.92) translateY(20px); }
+  55%  { transform: scale(1.03) translateY(-6px); }
+  75%  { transform: scale(0.99) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes panel-out {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.92) translateY(16px); }
+}
+
+/* Backdrop overlay */
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ========================================
+   CARTAS — Reparto, selección, juego, descarte
+   ======================================== */
+
+/* Reparto inicial — stagger via delay en JS */
+@keyframes deal-in {
+  0%   { opacity: 0; transform: translateY(60px) rotate(-5deg) scale(0.85); }
+  55%  { transform: translateY(-8px) rotate(2deg) scale(1.03); }
+  80%  { transform: translateY(2px) rotate(-1deg) scale(0.99); }
+  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
+
+/* Hover elevación con brillo */
+@keyframes card-hover {
+  0%   { transform: translateY(0); box-shadow: var(--card-shadow); }
+  100% { transform: translateY(-12px); box-shadow: var(--card-shadow-hover); }
+}
+
+/* Selección — check mark aparece con pop */
+@keyframes card-select {
+  0%   { transform: translateY(-12px); }
+  100% { transform: translateY(-26px); }
+}
+
+@keyframes check-mark-in {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+  50%  { transform: scale(1.2) rotate(5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* Jugar carta — vuelo parabólico hacia zona de puntuación */
+@keyframes card-played {
+  0%   { transform: translateY(-26px) scale(1) rotate(0deg); opacity: 1; z-index: 100; }
+  25%  { transform: translateY(-70px) scale(1.15) rotate(6deg); opacity: 1; }
+  65%  { transform: translateY(-140px) scale(0.75) rotate(14deg); opacity: 0.7; }
+  100% { transform: translateY(-240px) scale(0.5) rotate(20deg); opacity: 0; z-index: 100; }
+}
+
+/* Descarte — giro 3D y hundimiento */
+@keyframes card-discarded {
+  0%   { transform: translateY(0) rotateY(0deg) scale(1); opacity: 1; }
+  40%  { transform: translateY(18px) rotateY(80deg) scale(0.98); opacity: 0.8; }
+  70%  { transform: translateY(35px) rotateY(150deg) scale(0.85); opacity: 0.4; }
+  100% { transform: translateY(55px) rotateY(180deg) scale(0.7); opacity: 0; }
+}
+
+/* Carta robada — entrada rápida desde mazo */
+@keyframes card-drawn {
+  0%   { opacity: 0; transform: translateX(35px) translateY(-25px) scale(0.8) rotate(6deg); }
+  55%  { transform: translateX(-5px) translateY(5px) scale(1.04) rotate(-1.5deg); }
+  100% { opacity: 1; transform: translateX(0) translateY(0) scale(1) rotate(0); }
+}
+
+/* ========================================
+   BOTONES — Microinteracciones 3D
+   ======================================== */
+
+@keyframes btn-hover {
+  0%   { transform: translateY(0); box-shadow: var(--shadow-btn); }
+  100% { transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); }
+}
+
+@keyframes btn-press {
+  0%   { transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); }
+  100% { transform: translateY(2px); box-shadow: var(--shadow-btn-press); }
+}
+
+@keyframes btn-release {
+  0%   { transform: translateY(2px); box-shadow: var(--shadow-btn-press); }
+  40%  { transform: translateY(-4px); box-shadow: var(--shadow-btn-hover); }
+  100% { transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); }
+}
+
+/* Botón primario — shimmer sweep en hover */
+@keyframes btn-primary-shimmer {
+  0%   { transform: translateX(-150%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Botón inválido — shake + flash rojo */
+@keyframes btn-invalid {
+  0%, 100% { border-color: var(--c-border-gold); box-shadow: var(--shadow-btn-primary); transform: translateX(0); }
+  15%    { border-color: var(--c-danger); box-shadow: var(--shadow-btn-discard); transform: translateX(-5px); }
+  30%    { border-color: var(--c-danger); box-shadow: var(--shadow-btn-discard); transform: translateX(5px); }
+  45%    { border-color: var(--c-danger); box-shadow: var(--shadow-btn-discard); transform: translateX(-3px); }
+  60%    { border-color: var(--c-danger); box-shadow: var(--shadow-btn-discard); transform: translateX(3px); }
+  75%    { border-color: var(--c-danger); box-shadow: var(--shadow-btn-discard); transform: translateX(-1px); }
+}
+
+/* Badge contador — pop al cambiar */
+@keyframes badge-pop {
+  0%, 100% { transform: scale(1); }
+  45%      { transform: scale(1.35); }
+}
+
+/* ========================================
+   SCORE PREVIEW — Puntuación
+   ======================================== */
+
+/* Count-up números */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(0.6em) scale(0.75); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Panel pop al jugar mano */
+@keyframes score-panel-pop {
+  0%   { transform: scale(0.97); box-shadow: 0 0 0 rgba(196,138,30,0); }
+  35%  { transform: scale(1.025); box-shadow: 0 0 40px rgba(196,138,30,0.35), 0 0 0 2px var(--c-border-gold); }
+  100% { transform: scale(1); box-shadow: var(--shadow-lg), var(--shadow-glow-gold); }
+}
+
+/* Total grande — pop elástico */
+@keyframes total-pop {
+  0%   { transform: scale(0.65); opacity: 0; }
+  45%  { transform: scale(1.12); opacity: 1; }
+  70%  { transform: scale(0.97); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Step items aparecen escalonados */
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ========================================
+   TARGET BAR — Progreso objetivo
+   ======================================== */
+
+/* Glint sweep continuo en barra de progreso */
+@keyframes glint-sweep {
+  0%   { transform: translateX(-150%); }
+  55%  { transform: translateX(250%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Pulso cuando se alcanza objetivo */
+@keyframes target-cleared-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(95,240,232,0.35), inset 0 0 0 1px rgba(95,240,232,0.5); }
+  50%      { box-shadow: 0 0 24px rgba(95,240,232,0.6), inset 0 0 0 2px rgba(95,240,232,0.8); }
+}
+
+/* Fill animado */
+@keyframes target-fill {
+  from { width: 0%; }
+  to   { width: var(--target-width, 100%); }
+}
+
+/* Tick marks pop */
+@keyframes target-tick-pop {
+  0%   { opacity: 0; transform: scaleY(0.3); }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ========================================
+   DINERO — Contador
+   ======================================== */
+
+@keyframes money-change {
+  0%   { transform: scale(1); box-shadow: var(--shadow-md); }
+  25%  { transform: scale(1.18); box-shadow: 0 0 24px rgba(196,138,30,0.55), 0 3px 12px rgba(0,0,0,0.4); }
+  100% { transform: scale(1); box-shadow: var(--shadow-md); }
+}
+
+/* ========================================
+   TIMER — Advertencias
+   ======================================== */
+
+@keyframes timer-tick {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+@keyframes timer-late {
+  0%, 100% { border-color: rgba(255,90,77,0.5); box-shadow: 0 0 10px rgba(255,90,77,0.25); }
+  50%      { border-color: var(--c-danger); box-shadow: 0 0 20px rgba(255,90,77,0.55); }
+}
+
+/* ========================================
+   TOOLTIPS
+   ======================================== */
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: scale(0.88) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes tooltip-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(0.88) translateY(-6px); }
+}
+
+/* ========================================
+   TOASTS
+   ======================================== */
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 16px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to   { opacity: 0; transform: translate(-50%, -16px); }
+}
+
+@keyframes toast-shake {
+  0%, 100% { transform: translateX(-50%) translateX(0); }
+  18%      { transform: translateX(-50%) translateX(-10px); }
+  36%      { transform: translateX(-50%) translateX(10px); }
+  54%      { transform: translateX(-50%) translateX(-5px); }
+  72%      { transform: translateX(-50%) translateX(5px); }
+}
+
+/* ========================================
+   COMODINES — Joker cards
+   ======================================== */
+
+/* Revelación comodín comprado */
+@keyframes joker-reveal {
+  0%   { opacity: 0; transform: scale(0.65) translateX(35px); filter: brightness(2); }
+  35%  { transform: scale(1.1) translateX(-5px); filter: brightness(1.35); }
+  65%  { transform: scale(0.97) translateX(2px); filter: brightness(1.1); }
+  100% { opacity: 1; transform: scale(1) translateX(0); filter: brightness(1); }
+}
+
+/* Pulso legendario — glow respirando */
+@keyframes legendary-pulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(245,158,11,0.3), var(--shadow-lg); }
+  50%      { box-shadow: 0 0 36px rgba(245,158,11,0.55), 0 0 54px rgba(245,158,11,0.25), var(--shadow-lg); }
+}
+
+/* Respiración legendario en artwork */
+@keyframes legendary-breathe {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(245,158,11,0.45)); }
+  50%      { filter: drop-shadow(0 0 24px rgba(245,158,11,0.9)) brightness(1.06); }
+}
+
+/* Shake tienda — no dinero */
+@keyframes afford-shake {
+  0%, 100% { transform: translateX(0); }
+  18%      { transform: translateX(-7px); }
+  36%      { transform: translateX(7px); }
+  54%      { transform: translateX(-4px); }
+  72%      { transform: translateX(4px); }
+}
+
+/* Sello VENDIDO */
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(0.45); }
+  45%  { transform: translate(-50%, -50%) rotate(-14deg) scale(1.2); }
+  70%  { transform: translate(-50%, -50%) rotate(-14deg) scale(0.95); }
+  100% { opacity: 1; transform: translate(-50%, -50%) rotate(-14deg) scale(1); }
+}
+
+/* Comodín entra a la tienda (stagger) */
+@keyframes shop-offer-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.93); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ========================================
+   PANTALLA INICIO — Logo y suits
+   ======================================== */
+
+@keyframes float-suit {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-28px) rotate(8deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 8px rgba(240,196,58,0.5); }
+  50%      { opacity: 1; box-shadow: 0 0 20px rgba(255,227,140,0.95); }
+}
+
+@keyframes logo-glint {
+  0%   { transform: translateX(-120%); }
+  55%, 100% { transform: translateX(320%); }
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+/* ========================================
+   COACH HINT — Tutorial en juego
+   ======================================== */
+
+@keyframes coach-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================
+   MODALES — Round intro, win, shop
+   ======================================== */
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes round-modal-in {
+  0%   { opacity: 0; transform: scale(0.88) translateY(24px); }
+  45%  { transform: scale(1.04) translateY(-8px); }
+  70%  { transform: scale(0.98) translateY(3px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ========================================
+   CELEBRACIÓN VICTORIA / DERROTA
+   ======================================== */
+
+/* Screen shake */
+@keyframes screen-shake {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  10%      { transform: translateX(-5px) translateY(3px); }
+  20%      { transform: translateX(5px) translateY(-3px); }
+  30%      { transform: translateX(-4px) translateY(2px); }
+  40%      { transform: translateX(4px) translateY(-2px); }
+  50%      { transform: translateX(-3px) translateY(1px); }
+  60%      { transform: translateX(3px) translateY(-1px); }
+  70%      { transform: translateX(-2px) translateY(1px); }
+  80%      { transform: translateX(2px) translateY(-1px); }
+  90%      { transform: translateX(-1px) translateY(0); }
+}
+
+/* Flash blanco victoria */
+@keyframes win-flash {
+  0%   { opacity: 0; }
+  12%  { opacity: 0.6; }
+  24%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Banner victoria slide down */
+@keyframes banner-win-in {
+  0%   { opacity: 0; transform: translateY(-70px) scale(0.9); }
+  55%  { transform: translateY(10px) scale(1.03); }
+  75%  { transform: translateY(-3px) scale(0.99); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Confetti burst (para JS) */
+@keyframes confetti-fall {
+  0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translateY(700px) rotate(800deg) scale(0.25); }
+}
+
+/* Gold particles burst */
+@keyframes gold-burst {
+  0%   { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.3) translate(var(--tx), var(--ty)) rotate(var(--tr)); }
+}
+
+/* ========================================
+   UTILIDADES DE CLASE — Para usar en React/components
+   ======================================== */
+
+/* Entradas */
+.animate-fade-in         { animation: fade-in var(--dur-smooth) var(--ease-out); }
+.animate-slide-up        { animation: slide-up var(--dur-panel) var(--ease-bounce); }
+.animate-slide-down      { animation: slide-down var(--dur-panel) var(--ease-bounce); }
+.animate-scale-in        { animation: scale-in var(--dur-panel) var(--ease-bounce); }
+.animate-panel-in        { animation: panel-in var(--dur-panel) var(--ease-spring); }
+.animate-panel-out       { animation: panel-out var(--dur-smooth) var(--ease-in); }
+.animate-backdrop-in     { animation: backdrop-in var(--dur-smooth) var(--ease-out); }
+.animate-backdrop-out    { animation: backdrop-out var(--dur-smooth) var(--ease-in); }
+
+/* Cartas */
+.animate-deal-in         { animation: deal-in var(--dur-deal) var(--ease-spring) backwards; }
+.animate-card-hover      { animation: card-hover var(--dur-base) var(--ease-out) forwards; }
+.animate-card-select     { animation: card-select var(--dur-fast) var(--ease-out) forwards; }
+.animate-check-in        { animation: check-mark-in var(--dur-fast) var(--ease-bounce); }
+.animate-card-played     { animation: card-played var(--dur-play) cubic-bezier(0.3, 0, 0.4, 1) forwards; }
+.animate-card-discarded  { animation: card-discarded var(--dur-smooth) cubic-bezier(0.4, 0, 0.6, 1) forwards; }
+.animate-card-drawn      { animation: card-drawn var(--dur-smooth) var(--ease-spring); }
+
+/* Botones */
+.animate-btn-hover       { animation: btn-hover var(--dur-micro) var(--ease-out) forwards; }
+.animate-btn-press       { animation: btn-press var(--dur-instant) var(--ease-in) forwards; }
+.animate-btn-release     { animation: btn-release var(--dur-base) var(--ease-spring) forwards; }
+.animate-btn-invalid     { animation: btn-invalid var(--dur-smooth) var(--ease-out); }
+.animate-badge-pop       { animation: badge-pop var(--dur-fast) var(--ease-bounce); }
+.animate-btn-primary-shimmer { animation: btn-primary-shimmer 1.8s ease-in-out infinite; }
+
+/* Score */
+.animate-count-up        { animation: count-up var(--dur-count) var(--ease-out); }
+.animate-score-pop       { animation: score-panel-pop var(--dur-panel) var(--ease-spring); }
+.animate-total-pop       { animation: total-pop var(--dur-count) var(--ease-spring); }
+.animate-step-in         { animation: step-in var(--dur-base) var(--ease-out); }
+
+/* Target */
+.animate-glint           { animation: glint-sweep 2.8s ease-in-out infinite; }
+.animate-target-cleared  { animation: target-cleared-pulse 1.5s ease-in-out infinite; }
+.animate-target-fill     { animation: target-fill var(--dur-fill) var(--ease-out) forwards; }
+.animate-target-tick-pop { animation: target-tick-pop var(--dur-fast) var(--ease-bounce) backwards; }
+
+/* Dinero */
+.animate-money-change    { animation: money-change var(--dur-smooth) var(--ease-spring); }
+
+/* Timer */
+.animate-timer-tick      { animation: timer-tick 1s ease-in-out infinite; }
+.animate-timer-late      { animation: timer-late 1s ease-in-out infinite; }
+
+/* Tooltip */
+.animate-tooltip-in      { animation: tooltip-in var(--dur-fast) var(--ease-out); }
+.animate-tooltip-out     { animation: tooltip-out var(--dur-micro) var(--ease-in); }
+
+/* Toast */
+.animate-toast-in        { animation: toast-in var(--dur-base) var(--ease-out); }
+.animate-toast-out       { animation: toast-out var(--dur-fast) var(--ease-in); }
+.animate-toast-shake     { animation: toast-shake var(--dur-smooth) var(--ease-out); }
+
+/* Jokers */
+.animate-joker-reveal    { animation: joker-reveal var(--dur-panel) var(--ease-spring); }
+.animate-legendary-pulse { animation: legendary-pulse 3.5s ease-in-out infinite; }
+.animate-legendary-breathe { animation: legendary-breathe 3s ease-in-out infinite; }
+.animate-afford-shake    { animation: afford-shake var(--dur-smooth) var(--ease-out); }
+.animate-stamp-in        { animation: stamp-in var(--dur-base) var(--ease-spring); }
+.animate-shop-offer-in   { animation: shop-offer-in var(--dur-panel) var(--ease-spring) backwards; }
+
+/* Inicio */
+.animate-float-suit      { animation: float-suit 10s ease-in-out infinite; }
+.animate-blink           { animation: blink 2.6s ease-in-out infinite; }
+.animate-logo-glint      { animation: logo-glint 3.5s ease-in-out infinite; }
+.animate-logo-float      { animation: logo-float 4s ease-in-out infinite; }
+
+/* Coach */
+.animate-coach-in        { animation: coach-in var(--dur-smooth) var(--ease-out); }
+
+/* Modales */
+.animate-modal-in        { animation: modal-in var(--dur-panel) var(--ease-bounce); }
+.animate-round-modal-in  { animation: round-modal-in var(--dur-panel) var(--ease-spring); }
+
+/* Celebración */
+.animate-screen-shake    { animation: screen-shake 450ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.animate-win-flash       { animation: win-flash 250ms ease-out; }
+.animate-banner-win-in   { animation: banner-win-in 350ms var(--ease-spring); }
+.animate-confetti-fall   { animation: confetti-fall 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.animate-gold-burst      { animation: gold-burst 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+/* ========================================
+   STAGGER DELAYS — Usar con .stagger-container
+   ======================================== */
+
+.stagger-container > * { opacity: 0; animation-fill-mode: forwards; }
+
+.stagger-1  { animation-delay: calc(1 * 32ms); }
+.stagger-2  { animation-delay: calc(2 * 32ms); }
+.stagger-3  { animation-delay: calc(3 * 32ms); }
+.stagger-4  { animation-delay: calc(4 * 32ms); }
+.stagger-5  { animation-delay: calc(5 * 32ms); }
+.stagger-6  { animation-delay: calc(6 * 32ms); }
+.stagger-7  { animation-delay: calc(7 * 32ms); }
+.stagger-8  { animation-delay: calc(8 * 32ms); }
+.stagger-9  { animation-delay: calc(9 * 32ms); }
+.stagger-10 { animation-delay: calc(10 * 32ms); }
+.stagger-11 { animation-delay: calc(11 * 32ms); }
+.stagger-12 { animation-delay: calc(12 * 32ms); }
+
+/* Stagger base personalizable */
+.stagger-fast .stagger-1  { animation-delay: calc(1 * 18ms); }
+.stagger-fast .stagger-2  { animation-delay: calc(2 * 18ms); }
+.stagger-fast .stagger-3  { animation-delay: calc(3 * 18ms); }
+.stagger-fast .stagger-4  { animation-delay: calc(4 * 18ms); }
+.stagger-fast .stagger-5  { animation-delay: calc(5 * 18ms); }
+.stagger-fast .stagger-6  { animation-delay: calc(6 * 18ms); }
+.stagger-fast .stagger-7  { animation-delay: calc(7 * 18ms); }
+.stagger-fast .stagger-8  { animation-delay: calc(8 * 18ms); }
+
+.stagger-slow .stagger-1  { animation-delay: calc(1 * 55ms); }
+.stagger-slow .stagger-2  { animation-delay: calc(2 * 55ms); }
+.stagger-slow .stagger-3  { animation-delay: calc(3 * 55ms); }
+.stagger-slow .stagger-4  { animation-delay: calc(4 * 55ms); }
+.stagger-slow .stagger-5  { animation-delay: calc(5 * 55ms); }
+.stagger-slow .stagger-6  { animation-delay: calc(6 * 55ms); }
+.stagger-slow .stagger-7  { animation-delay: calc(7 * 55ms); }
+.stagger-slow .stagger-8  { animation-delay: calc(8 * 55ms); }
+
+/* ========================================
+   HOVER LIFT / PRESS SINK — Utilidades interactivas
+   ======================================== */
+
+.hover-lift {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+.hover-lift:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  filter: brightness(1.05);
+}
+
+.press-sink {
+  transition: transform 35ms var(--ease-in), box-shadow 35ms var(--ease-in);
+}
+.press-sink:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Focus visible consistente */
+:focus-visible {
+  outline: 2px solid var(--c-primary-glow);
+  outline-offset: 3px;
+}
+
+/* Deshabilitado consistente */
+:disabled,
+.disabled {
+  opacity: 0.42 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.55) saturate(0.45) !important;
+  transform: none !important;
+  pointer-events: none;
+}

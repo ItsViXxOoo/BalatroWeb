@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState, type ReactNode } from 'react';
 import { HelpModal } from './components/game/HelpModal';
+import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import {
   createInitialState,
   gameReducer,
@@ -258,13 +259,15 @@ export default function App() {
   }
 
   return (
-    <>
-      {content}
-      <HelpModal
-        open={helpOpen}
-        onClose={() => setHelpOpen(false)}
-        onPrint={screen === 'print' ? undefined : () => openPrintGuide(screen)}
-      />
-    </>
+    <AnimatedBackground gameState={game}>
+      <>
+        {content}
+        <HelpModal
+          open={helpOpen}
+          onClose={() => setHelpOpen(false)}
+          onPrint={screen === 'print' ? undefined : () => openPrintGuide(screen)}
+        />
+      </>
+    </AnimatedBackground>
   );
 }

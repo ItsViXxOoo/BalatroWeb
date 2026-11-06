@@ -91,12 +91,39 @@ export interface JokerContext {
   handType: HandType;
   cards: Card[];
   jokers: JokerDef[];
+
+  /** Cartas en mano (no jugadas) - para efectos "held in hand" */
+  hand?: Card[];
+  /** Cartas descartadas esta ronda */
+  discarded?: Card[];
+  /** Dinero actual del jugador */
+  money?: number;
+  /** Descartes restantes */
+  discardsLeft?: number;
+  /** Manos restantes */
+  handsLeft?: number;
+  /** Número de manos jugadas en la run */
+  handsPlayed?: number;
+  /** Índice de la ronda actual (0-based) */
+  roundIndex?: number;
+  /** Mazo completo (para Blue Joker, Erosion) */
+  deck?: Card[];
+  /** Tamaño inicial del mazo (52) */
+  startingDeckSize?: number;
+  /** Cartas vendidas en la run (para Campfire) */
+  cardsSold?: number;
+  /** Cartas jugadas esta ronda (para Loyalty Card) */
+  cardsPlayedThisRound?: number;
+  /** Si es la última mano de la ronda */
+  isFinalHand?: boolean;
 }
 
 export interface JokerEffect {
   chips?: number;
   mult?: number;
   xmult?: number;
+  /** Dinero ganado (para efectos de economía) */
+  money?: number;
   label: string;
 }
 

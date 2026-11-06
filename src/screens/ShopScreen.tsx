@@ -1,4 +1,4 @@
-import { useEffect, type Dispatch } from 'react';
+import { useEffect, useRef, type Dispatch } from 'react';
 import type { GameAction, GameState } from '../game/engine';
 import { getJoker } from '../game/jokers';
 import { MAX_JOKERS, ROUNDS } from '../game/rounds';
@@ -25,13 +25,17 @@ export function ShopScreen({
   const nextRound = ROUNDS[state.roundIndex + 1];
   const slotsFull = state.jokers.length >= MAX_JOKERS;
 
+  const messageIdRef = useRef(state.messageId);
+  messageIdRef.current = state.messageId;
+
   useEffect(() => {
     if (!state.message) return;
+    const currentMessageId = messageIdRef.current;
     const timeout = window.setTimeout(() => {
-      dispatch({ type: 'CLEAR_MESSAGE', messageId: state.messageId });
+      dispatch({ type: 'CLEAR_MESSAGE', messageId: currentMessageId });
     }, 2400);
     return () => window.clearTimeout(timeout);
-  }, [dispatch, state.message, state.messageId]);
+  }, [dispatch, state.message]);
 
   const buy = (offerId: string, cost: number) => {
     if (state.money < cost || slotsFull) {

@@ -13,13 +13,17 @@ type ToneOptions = {
 
 export function useSound(muted: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
+  const resumePromiseRef = useRef<Promise<void> | null>(null);
 
-  const getContext = useCallback(() => {
+  const getContext = useCallback(async () => {
     if (!contextRef.current) {
       contextRef.current = new AudioContext();
     }
     if (contextRef.current.state === 'suspended') {
-      void contextRef.current.resume();
+      if (!resumePromiseRef.current) {
+        resumePromiseRef.current = contextRef.current.resume();
+      }
+      await resumePromiseRef.current;
     }
     return contextRef.current;
   }, []);
@@ -47,11 +51,11 @@ export function useSound(muted: boolean) {
   );
 
   const play = useCallback(
-    (name: SoundName) => {
+    async (name: SoundName) => {
       if (muted) return;
 
       try {
-        const context = getContext();
+        const context = await getContext();
         switch (name) {
           case 'click':
             tone(context, { frequency: 420, duration: 0.05, type: 'square', gain: 0.02 });
