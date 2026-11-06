@@ -4,6 +4,8 @@ import { getJoker } from '../game/jokers';
 import { MAX_JOKERS, ROUNDS } from '../game/rounds';
 import type { PlaySound } from '../hooks/useSound';
 import { JokerCard } from '../components/ui/JokerCard';
+import { MoneyCounter } from '../animations';
+import { ToastContainer, useToast } from '../animations';
 
 interface ShopScreenProps {
   state: GameState;
@@ -28,6 +30,8 @@ export function ShopScreen({
   const messageIdRef = useRef(state.messageId);
   messageIdRef.current = state.messageId;
 
+  const { toasts, addToast, removeToast } = useToast();
+
   useEffect(() => {
     if (!state.message) return;
     const currentMessageId = messageIdRef.current;
@@ -36,6 +40,14 @@ export function ShopScreen({
     }, 2400);
     return () => window.clearTimeout(timeout);
   }, [dispatch, state.message]);
+
+  // Show toast for messages
+  useEffect(() => {
+    if (state.message) {
+      addToast({ message: state.message, duration: 2400 });
+      dispatch({ type: 'CLEAR_MESSAGE', messageId: state.messageId });
+    }
+  }, [state.message, state.messageId, addToast, dispatch]);
 
   const buy = (offerId: string, cost: number) => {
     if (state.money < cost || slotsFull) {
@@ -65,10 +77,7 @@ export function ShopScreen({
           <h1>LA TRASTIENDA</h1>
         </div>
         <div className="shop-top-right">
-          <span className="money-chip money-chip--big" title="Dinero disponible">
-            <i>$</i>
-            {state.money}
-          </span>
+          <MoneyCounter value={state.money} size="lg" />
           <button type="button" className="icon-button" onClick={onHelp} aria-label="Ayuda">
             ?
           </button>
@@ -183,11 +192,7 @@ export function ShopScreen({
         </footer>
       </main>
 
-      {state.message ? (
-        <div className="toast" role="status" key={state.messageId}>
-          {state.message}
-        </div>
-      ) : null}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </div>
   );
 }

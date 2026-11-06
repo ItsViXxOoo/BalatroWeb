@@ -1,36 +1,12 @@
-import { useEffect, useState } from 'react';
 import { formatMult } from '../../game/scoring';
 import type { ScoreResult } from '../../game/types';
+import { ChipCounter } from '../../animations';
 
 interface ScorePreviewProps {
   result: ScoreResult | null;
   selectedCount: number;
   played: boolean;
   pulse: number;
-}
-
-function CountUp({ value, animate }: { value: number; animate: boolean }) {
-  const [display, setDisplay] = useState(animate ? 0 : value);
-
-  useEffect(() => {
-    if (!animate) {
-      setDisplay(value);
-      return;
-    }
-    let frame = 0;
-    const start = performance.now();
-    const duration = 520;
-    const step = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(value * eased));
-      if (progress < 1) frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-  }, [value, animate]);
-
-  return <>{display}</>;
 }
 
 export function ScorePreview({ result, selectedCount, played, pulse }: ScorePreviewProps) {
@@ -74,7 +50,7 @@ export function ScorePreview({ result, selectedCount, played, pulse }: ScorePrev
           =
         </span>
         <div className="score-total" aria-label={`Total ${result.total} puntos`}>
-          <CountUp value={result.total} animate={played} />
+          <ChipCounter value={result.total} variant="total" size="lg" animate={played} duration={520} />
         </div>
       </div>
 

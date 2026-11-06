@@ -8,9 +8,10 @@ interface CardViewProps {
   selected: boolean;
   disabled?: boolean;
   onClick: () => void;
+  style?: CSSProperties;
 }
 
-export function CardView({ card, index, selected, disabled = false, onClick }: CardViewProps) {
+export function CardView({ card, index, selected, disabled = false, onClick, style }: CardViewProps) {
   const suit = SUITS[card.suit];
   const label = RANK_LABELS[card.rank];
 
@@ -18,7 +19,7 @@ export function CardView({ card, index, selected, disabled = false, onClick }: C
     <button
       type="button"
       className={`playing-card ${suit.red ? 'is-red' : ''} ${selected ? 'is-selected' : ''}`}
-      style={{ '--i': index } as CSSProperties}
+      style={{ '--i': index, ...style } as CSSProperties}
       onClick={onClick}
       disabled={disabled}
       aria-pressed={selected}

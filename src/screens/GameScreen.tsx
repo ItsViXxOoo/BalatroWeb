@@ -9,6 +9,9 @@ import { TargetBar } from '../components/game/TargetBar';
 import { Timer } from '../components/game/Timer';
 import { JokerCard } from '../components/ui/JokerCard';
 import { Modal } from '../components/ui/Modal';
+import { SimpleCardPlay } from '../animations';
+import { ToastContainer, useToast, ConfettiBurst, GoldBurst, WinFlash, BannerWin } from '../animations';
+import { ScoreBreakdown } from '../animations';
 
 const ROUND_TIPS = [
   'Empieza formando parejas y tríos. No necesitas la mano perfecta para pasar La Cantina.',
@@ -38,22 +41,43 @@ export function GameScreen({
   const preview =
     selectedCards.length > 0 ? scoreHand(selectedCards, state.jokers) : state.lastResult;
   const showingPlayed = selectedCards.length === 0 && state.lastResult !== null;
-  const canAct = state.phase === 'playing';
+  const canAct = state.phase === 'playing' && !state.isAnimatingPlay && !state.isAnimatingDiscard;
   const canPlay = canAct && selectedCards.length >= 1 && selectedCards.length <= 5;
   const canDiscard = canPlay && state.discardsLeft > 0;
   const coachVisible = canAct && state.handsPlayed === 0 && state.selected.length === 0;
 
+  const { toasts, addToast, removeToast } = useToast();
+
   const messageIdRef = useRef(state.messageId);
   messageIdRef.current = state.messageId;
 
+  // Handle play hand animation completion
   useEffect(() => {
-    if (!state.message) return;
-    const currentMessageId = messageIdRef.current;
-    const timeout = window.setTimeout(() => {
-      dispatch({ type: 'CLEAR_MESSAGE', messageId: currentMessageId });
-    }, 2400);
-    return () => window.clearTimeout(timeout);
-  }, [dispatch, state.message]);
+    if (state.isAnimatingPlay && state.playedCards.length > 0) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'PLAY_HAND_COMPLETE' });
+      }, 500); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [state.isAnimatingPlay, state.playedCards, dispatch]);
+
+  // Handle discard animation completion
+  useEffect(() => {
+    if (state.isAnimatingDiscard && state.discardedCards.length > 0) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'DISCARD_COMPLETE' });
+      }, 400); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [state.isAnimatingDiscard, state.discardedCards, dispatch]);
+
+  // Show toast for messages
+  useEffect(() => {
+    if (state.message) {
+      addToast({ message: state.message, duration: 2400 });
+      dispatch({ type: 'CLEAR_MESSAGE', messageId: state.messageId });
+    }
+  }, [state.message, state.messageId, addToast, dispatch]);
 
   const toggleCard = (cardId: string) => {
     playSound('card');
@@ -179,7 +203,7 @@ export function GameScreen({
             ) : null}
           </div>
 
-          <div className="hand-row">
+          <div className="hand-row" style={{ position: 'relative', minHeight: '140px' }}>
             {state.hand.map((card, index) => (
               <CardView
                 key={card.id}
@@ -190,6 +214,62 @@ export function GameScreen({
                 onClick={() => toggleCard(card.id)}
               />
             ))}
+
+            {/* Card play animation */}
+            {state.isAnimatingPlay && state.playedCards.length > 0 && (
+              <SimpleCardPlay
+                startPositions={state.playedCards.map((_, i) => ({
+                  x: (i - (state.playedCards.length - 1) / 2) * 80,
+                  y: 0,
+                  rotation: 0,
+                  scale: 1,
+                  zIndex: 10,
+                }))}
+                centerPosition={{ x: 0, y: -200 }}
+                onComplete={() => {}}
+                reducedMotion={false}
+              >
+                {(index, style) => (
+                  <CardView
+                    key={state.playedCards[index].id}
+                    card={state.playedCards[index]}
+                    index={index}
+                    selected={false}
+                    disabled={true}
+                    onClick={() => {}}
+                    style={style as React.CSSProperties}
+                  />
+                )}
+              </SimpleCardPlay>
+            )}
+
+            {/* Card discard animation */}
+            {state.isAnimatingDiscard && state.discardedCards.length > 0 && (
+              <SimpleCardPlay
+                startPositions={state.discardedCards.map((_, i) => ({
+                  x: (i - (state.discardedCards.length - 1) / 2) * 80,
+                  y: 0,
+                  rotation: 0,
+                  scale: 1,
+                  zIndex: 10,
+                }))}
+                centerPosition={{ x: 0, y: 200 }}
+                onComplete={() => {}}
+                reducedMotion={false}
+              >
+                {(index, style) => (
+                  <CardView
+                    key={state.discardedCards[index].id}
+                    card={state.discardedCards[index]}
+                    index={index}
+                    selected={false}
+                    disabled={true}
+                    onClick={() => {}}
+                    style={style as React.CSSProperties}
+                  />
+                )}
+              </SimpleCardPlay>
+            )}
           </div>
 
           {coachVisible ? (
@@ -310,11 +390,44 @@ export function GameScreen({
         </p>
       </Modal>
 
-      {state.message ? (
-        <div className="toast" role="status" key={state.messageId}>
-          {state.message}
-        </div>
-      ) : null}
+      {/* Score breakdown for played hand */}
+      {state.lastResult && showingPlayed && (
+        <ScoreBreakdown
+          baseChips={state.lastResult.chips - (state.lastResult.steps.find(s => s.kind === 'chips')?.detail ? parseInt(state.lastResult.steps.find(s => s.kind === 'chips')?.detail || '0') : 0)}
+          cardChips={state.lastResult.steps.find(s => s.kind === 'chips')?.detail ? parseInt(state.lastResult.steps.find(s => s.kind === 'chips')?.detail || '0') : 0}
+          chips={state.lastResult.chips}
+          baseMult={state.lastResult.mult}
+          mult={state.lastResult.mult}
+          total={state.lastResult.total}
+          steps={state.lastResult.steps.map(s => ({ label: s.label, detail: s.detail, kind: s.kind as 'chips' | 'mult' | 'xmult' | 'joker' | 'total' }))}
+          jokerNames={state.lastResult.jokerNames}
+          animate={true}
+        />
+      )}
+
+      {/* Toast container */}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+
+      {/* Win flash and banner for round won */}
+      {state.phase === 'roundWon' && (
+        <>
+          <WinFlash isActive={true} onComplete={() => {}} />
+          <BannerWin isActive={true}>
+            <div className="banner-win-content">
+              <h2>¡MESA SUPERADA!</h2>
+              <p>{state.roundScore.toLocaleString('es')} puntos</p>
+            </div>
+          </BannerWin>
+        </>
+      )}
+
+      {/* Confetti for run complete */}
+      {state.phase === 'runComplete' && (
+        <>
+          <ConfettiBurst isActive={true} onComplete={() => {}} />
+          <GoldBurst isActive={true} onComplete={() => {}} />
+        </>
+      )}
     </div>
   );
 }

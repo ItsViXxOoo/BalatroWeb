@@ -49,6 +49,10 @@ export interface GameState {
   messageId: number;
   bestHand: BestHand | null;
   handsPlayed: number;
+  playedCards: Card[];       // Cartas que se están animando al jugarse
+  discardedCards: Card[];    // Cartas que se están animando al descartarse
+  isAnimatingPlay: boolean;  // Flag para bloquear input durante animación
+  isAnimatingDiscard: boolean; // Flag para bloquear input durante animación
 }
 
 export type GameAction =
@@ -56,7 +60,9 @@ export type GameAction =
   | { type: 'BEGIN_ROUND' }
   | { type: 'TOGGLE_CARD'; cardId: string }
   | { type: 'PLAY_HAND' }
+  | { type: 'PLAY_HAND_COMPLETE' }
   | { type: 'DISCARD' }
+  | { type: 'DISCARD_COMPLETE' }
   | { type: 'GO_SHOP' }
   | { type: 'BUY_JOKER'; offerId: string }
   | { type: 'SELL_JOKER'; jokerId: string }
@@ -95,6 +101,10 @@ export function createInitialState(): GameState {
     messageId: 0,
     bestHand: null,
     handsPlayed: 0,
+    playedCards: [],
+    discardedCards: [],
+    isAnimatingPlay: false,
+    isAnimatingDiscard: false,
   };
 }
 
@@ -134,6 +144,7 @@ function startRun(state: GameState, action: Extract<GameAction, { type: 'START_R
 
 function playHand(state: GameState): GameState {
   if (state.phase !== 'playing') return state;
+  if (state.isAnimatingPlay) return state;
 
   const cards = selectedCards(state);
   if (cards.length === 0) return message(state, 'Elige al menos una carta.');
@@ -150,6 +161,7 @@ function playHand(state: GameState): GameState {
       ? { name: result.describe, total: result.total }
       : state.bestHand;
 
+  // Start animation phase - keep played cards visible for animation
   const next: GameState = {
     ...state,
     hand: [...remaining, ...drawn],
@@ -163,6 +175,8 @@ function playHand(state: GameState): GameState {
     bestHand,
     handsPlayed: state.handsPlayed + 1,
     message: null,
+    playedCards: cards,
+    isAnimatingPlay: true,
   };
 
   if (roundScore >= state.target) {
@@ -182,6 +196,7 @@ function playHand(state: GameState): GameState {
 
 function discard(state: GameState): GameState {
   if (state.phase !== 'playing') return state;
+  if (state.isAnimatingDiscard) return state;
   if (state.discardsLeft <= 0) return message(state, 'No te quedan descartes.');
 
   const cards = selectedCards(state);
@@ -200,6 +215,8 @@ function discard(state: GameState): GameState {
     lastResult: null,
     message: `Descartaste ${cards.length} ${cards.length === 1 ? 'carta' : 'cartas'}.`,
     messageId: state.messageId + 1,
+    discardedCards: cards,
+    isAnimatingDiscard: true,
   };
 }
 
@@ -255,6 +272,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'TOGGLE_CARD': {
       if (state.phase !== 'playing') return state;
+      if (state.isAnimatingPlay || state.isAnimatingDiscard) return state;
       if (state.selected.includes(action.cardId)) {
         return { ...state, selected: state.selected.filter((id) => id !== action.cardId) };
       }
@@ -267,8 +285,22 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'PLAY_HAND':
       return playHand(state);
 
+    case 'PLAY_HAND_COMPLETE':
+      return {
+        ...state,
+        playedCards: [],
+        isAnimatingPlay: false,
+      };
+
     case 'DISCARD':
       return discard(state);
+
+    case 'DISCARD_COMPLETE':
+      return {
+        ...state,
+        discardedCards: [],
+        isAnimatingDiscard: false,
+      };
 
     case 'GO_SHOP': {
       if (state.phase !== 'roundWon') return state;

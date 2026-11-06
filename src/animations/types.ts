@@ -28,6 +28,8 @@ export interface CardPlayAnimationConfig {
   reducedMotion?: boolean;
 }
 
+export type RequiredCardPlayAnimationConfig = Required<CardPlayAnimationConfig>;
+
 export interface CardPlayResult {
   finalScores: number[];
   totalScore: number;
@@ -76,10 +78,11 @@ export interface ScoreBreakdownConfig {
   baseMult: number;
   mult: number;
   total: number;
-  steps?: string[];
+  steps?: Array<{ label: string; detail: string; kind: 'chips' | 'mult' | 'xmult' | 'joker' | 'total' }>;
   jokerNames?: string[];
   staggerDelay?: number;
   duration?: number;
+  onComplete?: () => void;
 }
 
 export type ChipVariant = 'chips' | 'mult' | 'total' | 'money';
@@ -113,8 +116,10 @@ export interface ScoreBreakdownProps {
   baseMult: number;
   mult: number;
   total: number;
-  steps?: string[];
+  steps?: Array<{ label: string; detail: string; kind: 'chips' | 'mult' | 'xmult' | 'joker' | 'total' }>;
   jokerNames?: string[];
+  staggerDelay?: number;
+  duration?: number;
   animate?: boolean;
   className?: string;
 }
